@@ -342,7 +342,7 @@ class Evaluator:
                 print(f'Succeed on {min_episode} step.')
             else:
                 print("Failed.")
-            print(self.planner.dialogue)
+            # print(self.planner.dialogue)
     
     def multi_task_evaluate(self):
         loops = self.cfg['eval']['goal_ratio']
