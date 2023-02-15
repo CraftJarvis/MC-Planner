@@ -1,0 +1,15 @@
+name: simple
+fusion_type: concat
+state_dim: 1024
+goal_dim: 512
+symbol_dim: 2
+action_dim: 8
+embed_dim: 1024
+max_ep_len: 1000
+
+backbone_name: goal_impala_1x
+frozen_cnn: False
+only_load_cnn: False
+load_ckpt_path: ''
+
+c: 8

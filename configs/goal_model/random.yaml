@@ -1,0 +1,6 @@
+use_mineclip: 0
+use_clip: 0
+use_horizon: 0
+use_ranking_goal: 0
+use_random_goal: 1
+use_fixed_goal: 0

@@ -1,0 +1,43 @@
+{
+    "mineclip": {
+        "log": "mine wood",
+        "mutton": "kill sheep",
+        "wool": "kill sheep",
+        "beef": "kill cow",
+        "leather": "kill cow",
+        "porkchop": "kill pig",
+        "cobblestone": "mine stone",
+
+        "sheep": "find and kill sheep",
+        "cow": "find and kill cow",
+        "pig": "find and kill pig",
+        "spider": "find and kill spider",
+        "polar_bear": "find and kill polar bear",
+        "chicken": "find and kill chicken",
+        "horse": "find and kill horse",
+        "llama": "find and kill llama",
+        "mushroom_cow": "find and kill mushroom cow"
+    },
+    "clip": {
+        "log": "a photo of cartoon tree in Minecraft",
+        "mutton": "a photo of cartoon sheep in Minecraft",
+        "wool": "a photo of cartoon sheep in Minecraft",
+        "beef": "a photo of cartoon cow in Minecraft",
+        "leather": "a photo of cartoon cow in Minecraft",
+        "porkchop": "a photo of cartoon pig in Minecraft",
+        "cobblestone": "a photo of cartoon stone in Minecraft"
+    },
+    "horizon": {
+        "log": "log",
+        "mutton": "sheep",
+        "wool": "sheep",
+        "beef": "cow", 
+        "leather": "cow",
+        "porkchop": "pig",
+        "stone": "stone",
+        "diamond": "diamond",
+        "cobblestone": "cobblestone",
+        "iron_ore": "iron_ore",
+        "coal": "coal"
+    }
+}

@@ -1,0 +1,492 @@
+{
+    "obtain_planks": {
+      "question": "How to obtain planks?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "planks"
+    },
+    "obtain_stick": {
+      "question": "How to obtain stick?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "stick"
+    },
+    "obtain_wooden_slab": {
+      "question": "How to obtain wooden_slab?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "wooden_slab"
+    },
+    "obtain_wooden_button": {
+      "question": "How to obtain wooden_button?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "wooden_button"
+    },
+    "obtain_wooden_pressure_plate": {
+      "question": "How to obtain wooden_pressure_plate?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "wooden_pressure_plate"
+    },
+    "obtain_chest": {
+      "question": "How to obtain chest?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "chest"
+    },
+    "obtain_oak_stairs": {
+      "question": "How to obtain oak_stairs?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "oak_stairs"
+    },
+    "obtain_sign": {
+      "question": "How to obtain sign?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "sign"
+    },
+    "obtain_fence": {
+      "question": "How to obtain fence?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "fence"
+    },
+    "obtain_fence_gate": {
+      "question": "How to obtain fence_gate?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "fence_gate"
+    },
+    "obtain_boat": {
+      "question": "How to obtain boat?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "boat"
+    },
+    "obtain_trapdoor": {
+      "question": "How to obtain trapdoor?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "trapdoor"
+    },
+    "obtain_bowl": {
+      "question": "How to obtain bowl?",
+      "group": "MT1",
+      "alias": "basic",
+      "episode": 3000,
+      "object": "bowl"
+    },
+    "obtain_stone_stairs": {
+      "question": "How to obtain stone_stairs?",
+      "group": "MT4",
+      "alias": "dig_down",
+      "episode": 3000,
+      "object": "stone_stairs"
+    },
+    "obtain_stone_slab": {
+      "question": "How to obtain stone_slab?",
+      "group": "MT4",
+      "alias": "dig_down",
+      "episode": 3000,
+      "object": "stone_slab"
+    },
+    "obtain_cobblestone_wall": {
+      "question": "How to obtain cobblestone_wall?",
+      "group": "MT4",
+      "alias": "dig_down",
+      "episode": 3000,
+      "object": "cobblestone_wall"
+    },
+    "obtain_lever": {
+      "question": "How to obtain lever?",
+      "group": "MT4",
+      "alias": "dig_down",
+      "episode": 3000,
+      "object": "lever"
+    },
+    "obtain_stone": {
+      "question": "How to obtain stone?",
+      "group": "MT4",
+      "alias": "dig_down",
+      "episode": 3000,
+      "object": "stone"
+    },
+    "obtain_stone_pressure_plate": {
+      "question": "How to obtain stone_pressure_plate?",
+      "group": "MT4",
+      "alias": "dig_down",
+      "episode": 3000,
+      "object": "stone_pressure_plate"
+    },
+    "obtain_coal": {
+      "question": "How to obtain coal?",
+      "group": "MT4",
+      "alias": "dig_down",
+      "episode": 3000,
+      "object": "coal"
+    },
+    "obtain_torch": {
+      "question": "How to obtain torch?",
+      "group": "MT4",
+      "alias": "dig_down",
+      "episode": 3000,
+      "object": "torch"
+    },
+    "obtain_crafting_table": {
+      "question": "How to obtain crafting_table?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "crafting_table"
+    },
+    "obtain_wooden_pickaxe": {
+      "question": "How to obtain wooden_pickaxe?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "wooden_pickaxe"
+    },
+    "obtain_wooden_axe": {
+      "question": "How to obtain wooden_axe?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "wooden_axe"
+    },
+    "obtain_wooden_hoe": {
+      "question": "How to obtain wooden_hoe?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "wooden_hoe"
+    },
+    "obtain_wooden_sword": {
+      "question": "How to obtain wooden_sword?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "wooden_sword"
+    },
+    "obtain_wooden_shovel": {
+      "question": "How to obtain wooden_shovel?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "wooden_shovel"
+    },
+    "obtain_furnace": {
+      "question": "How to obtain furnace?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "furnace"
+    },
+    "obtain_stone_pickaxe": {
+      "question": "How to obtain stone_pickaxe?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "stone_pickaxe"
+    },
+    "obtain_stone_axe": {
+      "question": "How to obtain stone_axe?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "stone_axe"
+    },
+    "obtain_stone_hoe": {
+      "question": "How to obtain stone_hoe?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "stone_hoe"
+    },
+    "obtain_stone_shovel": {
+      "question": "How to obtain stone_shovel?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "stone_shovel"
+    },
+    "obtain_stone_sword": {
+      "question": "How to obtain stone_sword?",
+      "group": "MT2",
+      "alias": "simple_tool",
+      "episode": 3000,
+      "object": "stone_sword"
+    },
+    "obtain_bucket": {
+      "question": "How to obtain bucket?",
+      "group": "MT6",
+      "alias": "complex_tool",
+      "episode": 6000,
+      "object": "bucket"
+    },
+    "obtain_shears": {
+      "question": "How to obtain shears?",
+      "group": "MT6",
+      "alias": "complex_tool",
+      "episode": 6000,
+      "object": "shears"
+    },
+    "obtain_iron_pickaxe": {
+      "question": "How to obtain iron_pickaxe?",
+      "group": "MT6",
+      "alias": "complex_tool",
+      "episode": 6000,
+      "object": "iron_pickaxe"
+    },
+    "obtain_iron_axe": {
+      "question": "How to obtain iron_axe?",
+      "group": "MT6",
+      "alias": "complex_tool",
+      "episode": 6000,
+      "object": "iron_axe"
+    },
+    "obtain_iron_hoe": {
+      "question": "How to obtain iron_hoe?",
+      "group": "MT6",
+      "alias": "complex_tool",
+      "episode": 6000,
+      "object": "iron_hoe"
+    },
+    "obtain_iron_shovel": {
+      "question": "How to obtain iron_shovel?",
+      "group": "MT6",
+      "alias": "complex_tool",
+      "episode": 6000,
+      "object": "iron_shovel"
+    },
+    "obtain_iron_sword": {
+      "question": "How to obtain iron_sword?",
+      "group": "MT6",
+      "alias": "complex_tool",
+      "episode": 6000,
+      "object": "iron_sword"
+    },
+    "obtain_leather_boots": {
+      "question": "How to obtain leather_boots?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "leather_boots"
+    },
+    "obtain_leather_chestplate": {
+      "question": "How to obtain leather_chestplate?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "leather_chestplate"
+    },
+    "obtain_leather_helmet": {
+      "question": "How to obtain leather_helmet?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "leather_helmet"
+    },
+    "obtain_leather_leggings": {
+      "question": "How to obtain leather_leggings?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "leather_leggings"
+    },
+    "obtain_iron_chestplate": {
+      "question": "How to obtain iron_chestplate?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "iron_chestplate"
+    },
+    "obtain_iron_leggings": {
+      "question": "How to obtain iron_leggings?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "iron_leggings"
+    },
+    "obtain_iron_helmet": {
+      "question": "How to obtain iron_helmet?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "iron_helmet"
+    },
+    "obtain_iron_boots": {
+      "question": "How to obtain iron_boots?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "iron_boots"
+    },
+    "obtain_shield": {
+      "question": "How to obtain shield?",
+      "group": "MT5",
+      "alias": "equipment",
+      "episode": 6000,
+      "object": "shield"
+    },
+    "obtain_iron_bars": {
+      "question": "How to obtain iron_bars?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "iron_bars"
+    },
+    "obtain_iron_nugget": {
+      "question": "How to obtain iron_nugget?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "iron_nugget"
+    },
+    "obtain_minecart": {
+      "question": "How to obtain minecart?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "minecart"
+    },
+    "obtain_hopper": {
+      "question": "How to obtain hopper?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "hopper"
+    },
+    "obtain_hopper_minecart": {
+      "question": "How to obtain hopper_minecart?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "hopper_minecart"
+    },
+    "obtain_furnace_minecart": {
+      "question": "How to obtain furnace_minecart?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "furnace_minecart"
+    },
+    "obtain_chest_minecart": {
+      "question": "How to obtain chest_minecart?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "chest_minecart"
+    },
+    "obtain_iron_door": {
+      "question": "How to obtain iron_door?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "iron_door"
+    },
+    "obtain_iron_trapdoor": {
+      "question": "How to obtain iron_trapdoor?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "iron_trapdoor"
+    },
+    "obtain_tripwire_hook": {
+      "question": "How to obtain tripwire_hook?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "tripwire_hook"
+    },
+    "obtain_heavy_weighted_pressure_plate": {
+      "question": "How to obtain heavy_weighted_pressure_plate?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "heavy_weighted_pressure_plate"
+    },
+    "obtain_rail": {
+      "question": "How to obtain rail?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "rail"
+    },
+    "obtain_cauldron": {
+      "question": "How to obtain cauldron?",
+      "group": "MT7",
+      "alias": "iron_stage",
+      "episode": 9000,
+      "object": "cauldron"
+    },
+    "obtain_bed": {
+      "question": "How to obtain bed?",
+      "group": "MT3",
+      "alias": "hunt_and_food",
+      "episode": 6000,
+      "object": "bed"
+    },
+    "obtain_painting": {
+      "question": "How to obtain painting?",
+      "group": "MT3",
+      "alias": "hunt_and_food",
+      "episode": 6000,
+      "object": "painting"
+    },
+    "obtain_carpet": {
+      "question": "How to obtain carpet?",
+      "group": "MT3",
+      "alias": "hunt_and_food",
+      "episode": 6000,
+      "object": "carpet"
+    },
+    "obtain_item_frame": {
+      "question": "How to obtain item_frame?",
+      "group": "MT3",
+      "alias": "hunt_and_food",
+      "episode": 6000,
+      "object": "item_frame"
+    },
+    "obtain_cooked_porkchop": {
+      "question": "How to obtain cooked_porkchop?",
+      "group": "MT3",
+      "alias": "hunt_and_food",
+      "episode": 6000,
+      "object": "cooked_porkchop"
+    },
+    "obtain_cooked_beef": {
+      "question": "How to obtain cooked_beef?",
+      "group": "MT3",
+      "alias": "hunt_and_food",
+      "episode": 6000,
+      "object": "cooked_beef"
+    },
+    "obtain_cooked_mutton": {
+      "question": "How to obtain cooked_mutton?",
+      "group": "MT3",
+      "alias": "hunt_and_food",
+      "episode": 6000,
+      "object": "cooked_mutton"
+    },
+    "obtain_diamond": {
+      "question": "How to obtain diamond?",
+      "group": "MT8",
+      "alias": "challenge",
+      "episode": 12000,
+      "object": "diamond"
+    }
+  }

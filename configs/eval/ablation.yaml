@@ -1,0 +1,11 @@
+cam: False
+only: True
+fps: 1000
+max_ep_len: 1800
+episodes: 10
+horizon: 0
+num_workers: 0
+goal_id: [0]
+env_id:  [0]
+goal_ratio: 10
+envs: ['ablation', ] # demons 

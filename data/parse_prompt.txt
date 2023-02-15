@@ -1,0 +1,30 @@
+input: mine({'log':3}, null); # action 1: mine 3 log without tool
+name: mine_log
+action: mine
+object: {'log':3}
+tool: null
+rank: 1
+
+input: craft({'planks':12}, {'log':3}, null); # action 2: craft 12 planks from 3 log
+name: craft_planks
+action: craft
+object: {'planks':12}
+materials: {'log':3}
+tool: null
+rank: 2
+
+input: craft({'wooden_axe':1}, {'planks':3, 'stick':2}, 'crafting_table');  # action 5: craft 1 wooden_axe from 3 planks and 2 stick, on crafting_table
+name: craft_wooden_axe
+action: craft
+object: {'wooden_axe':1}
+materials: {'planks':3, 'stick':2}
+tool: 'crafting_table'
+rank: 5
+
+input: mine({'cobblestone':2}, 'wooden_pickaxe'); # action 3: mine 2 cobblestone with wooden_pickaxe
+name: mine_cobblestone
+action: mine
+object: {'cobblestone':2}
+tool: wooden_pickaxe
+rank: 3
+

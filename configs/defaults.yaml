@@ -1,0 +1,93 @@
+defaults:
+  - _self_
+  - data: planning
+  - model: simple
+  - eval: planning
+  - goal_model: horizon
+  
+
+goal_model: 
+  freq: 1
+  queue_size: 0
+
+mineclip:
+  arch: "vit_base_p16_fz.v2.t2"
+  hidden_dim: 512
+  image_feature_dim: 512
+  mlp_adapter_spec: "v0-2.t0"
+  pool_type: "attn.d2.nh8.glusw"
+  resolution: [160, 256]
+
+eval:
+  only: False
+  num_workers: 2
+  max_ep_len: 3000
+  goal_ratio: 5
+  freq: 1
+  fps: 1000
+  env_name: 'crafting'
+  task_name: 'obtain_planks'
+
+
+data:
+  skip_frame: 5
+  window_len: 10
+  padding_pos: left
+  per_data_filters: null
+  
+model:
+  use_horizon: True
+  use_extra_obs: True
+  use_prev_action: True
+  use_recurrent: 'transformer'
+  use_pred_horizon: True
+  c: 8
+
+  extra_obs_cfg:
+    biome_hiddim: 256
+    compass_hiddim: 256
+    gps_hiddim: 256
+    voxels_hiddim: 256
+  transformer_cfg:
+    n_layer: 6
+    n_head: 4
+    resid_pdrop: 0.1
+    attn_pdrop: 0.1
+    activation_function: 'relu'
+
+  model_path: ''
+  weight_path: ''
+
+pretrains:
+  clip_path: /home/zhwang/workspace/minerl/Planners/checkpoints/attn.pth
+
+loss:
+  action_loss: 
+    fn: action_loss
+    weight: 1.0
+    enable: True
+  horizon_loss:
+    fn: horizon_loss
+    weight: 1.0
+    enable: True
+
+optimize:
+  parallel: False
+  gamma: 1.0
+  batch_size: 32
+  num_workers: 8
+  max_iters: 1000
+  learning_rate: 0.0001
+  backbone_ratio: 1.0
+  weight_decay: 0.0001
+  warmup_steps: 10000
+  aug_ratio: 10000
+  
+record:
+  ckpt_freq: 2
+  log_to_wandb: False
+  dir: ${hydra:runtime.cwd}/recordings
+  frames: True
+
+simulator:
+  resolution: [640, 480]

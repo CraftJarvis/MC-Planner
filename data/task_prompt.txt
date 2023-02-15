@@ -1,0 +1,73 @@
+Human: You are a helper AI agent in Minecraft. You need to generate the sequences of sub-goals (actions) for a certPlannern task in Minecraft.
+AI: OK.
+Human: How to obtain wooden_axe?
+AI: The code for obtaining wooden_axe is as bellows:
+def obtain_wooden_axe(inventory = {}):
+    mine({'log':3}, null); # action 1: mine 3 log without tool 
+    craft({'planks':12}, {'log':3}, null); # action 2: craft 12 planks from 3 log
+    craft({'crafting_table':1}, {'planks':4}, null); # action 3: craft 1 crafting_table from 4 planks 
+    craft({'stick':4}, {'planks':2}, null); # action 4: craft 4 stick from 2 planks
+    craft({'wooden_axe':1}, {'planks':3, 'stick':2}, 'crafting_table'); # action 5: craft 1 wooden_axe from 3 planks and 2 stick, on crafting_table
+    return 'wooden_axe'
+Human: I succeed on step 1.
+Human: I succeed on step 2.
+Human: I succeed on step 3.
+Human: I succeed on step 4.
+Human: I succeed on step 5.
+Human: Good. I finish the task.
+AI: OK.
+
+Human: How to obtain stone_sword?
+AI: The code for obtaining stone_sword is as bellows:
+def obtain_stone_sword(inventory = {}):
+    mine({'log':3}, null); # action 1: mine 3 log without tool
+    craft({'planks':12}, {'log':3}, null); # action 2: craft 12 planks from 3 log
+    craft({'stick':4}, {'planks':2}, null); # action 3: craft 4 stick from 2 planks
+    mine({'cobblestone':1}, null); # action 4: mine 1 cobblestone without tool
+    craft({'stone_sword':1}, {'cobblestone':2, 'stick':1}, 'crafting_table'); # action 5: craft 1 stone_sword from 2 cobblestone and 1 stick, on crafting_table
+    return 'stone_sword'
+Human: I succeed on step 1.
+Human: I succeed on step 2.
+Human: I succeed on step 3.
+Human: My inventory now has 10 planks, 4 stick.
+Human: I fail on step 4 "mine({'cobblestone':1}, null);" because mine cobblestone need to use the tool wooden_pickaxe.
+Human: Please fix above errors and replan the task.
+AI: The code for obtaining stone_sword is as bellows:
+def obtain_stone_sword(inventory = {}):
+    craft({'wooden_pickaxe':1}, {'planks':3, 'stick':2}, 'crafting_table');  # action 4: craft 1 wooden_pickaxe from 3 planks and 2 stick, on crafting_table
+    mine({'cobblestone':1}, 'wooden_pickaxe'); # action 5: mine 1 cobblestone with wooden_pickaxe
+    craft({'stone_sword':1}, {'cobblestone':2, 'stick':1}, 'crafting_table'); # action 6:  craft 1 stone_sword from 2 cobblestone and 1 stick, on crafting_table
+    return 'stone_sword'
+Human: My inventory now has 10 planks, 4 stick.
+Human: I fail on step 4 "craft({'wooden_pickaxe':1}, {'planks':3, 'stick':2}, 'crafting_table');" because the action needs to use the tool crafting_table, but my inventory does not have it.
+Human: Please fix above errors and replan the task.
+AI: The code for obtaining stone_sword is as bellows:
+def obtain_stone_sword(inventory = {}):
+    craft({'crafting_table':1}, {'planks':4}, null); # action 4: craft 1 crafting_table from 4 planks 
+    craft({'wooden_pickaxe':1}, {'planks':3, 'stick':2}, 'crafting_table'); # action 5: craft 1 wooden_pickaxe from 3 planks and 2 stick, on crafting_table
+    mine({'cobblestone':1}, 'wooden_pickaxe'); # action 6: mine 1 cobblestone with wooden_pickaxe
+    craft({'stone_sword':1}, {'cobblestone':2, 'stick':1}, null); # action 7: craft 1 stone_sword from 2 cobblestone and 1 stick
+    return 'stone_sword'
+Human: I succeed on step 4.
+Human: I succeed on step 5.
+Human: I succeed on step 6.
+Human: My inventory now has 3 planks, 2 stick, 1 cobblestone, 1 crafting_table, 1 wooden_pickaxe.
+Human: I fail on step 7 "craft({'stone_sword':1}, {'cobblestone':2, 'stick':2}, 'crafting_table');" because the action needs 2 cobblestone, but my inventory only has 1 cobblestone.
+Human: Please fix above errors and replan the task.
+AI: The code for obtaining stone_sword is as bellows:
+def obtain_stone_sword(inventory = {}):
+    mine({'cobblestone':1}, 'wooden_pickaxe'); # action 7: mine 2 cobblestone with wooden_pickaxe
+    craft({'stone_sword':1}, {'cobblestone':2, 'stick':1}, null); # action 8: craft 1 stone_sword from 2 cobblestone and 1 stick
+    return 'stone_sword'
+Human: I succeed on step 7.
+Human: My inventory now has 3 planks, 2 stick, 2 cobblestone, 1 crafting_table, 1 wooden_pickaxe.
+Human: I fail on step 8 "craft({'stone_sword':1}, {'cobblestone':2, 'stick':1}, null);" because the action needs to use the tool crafting_table, my inventory has 1 crafting_table, but I do not use it.
+Human: Please fix above errors and replan the task.
+AI: The code for obtaining stone_sword is as bellows:
+def obtain_stone_sword(inventory = {}):
+    craft({'stone_sword':1}, {'cobblestone':2, 'stick':1}, 'crafting_table'); # action 8: craft 1 stone_sword from 2 cobblestone and 1 stick, on crafting_table
+    return 'stone_sword'
+Human: I succeed on step 8.
+Human: Good. I finish the task.
+AI: OK.
+
