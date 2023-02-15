@@ -38,7 +38,7 @@ To run the code, call
 ```sh
 python main.py model.load_ckpt_path=<path/to/ckpt>
 ```
-After loading, you should see som windows where agents are playing Minecraft. 
+After loading, you should see a window where agents are playing Minecraft. 
 
 <img src="imgs/painting.gif" width="200" />
 
