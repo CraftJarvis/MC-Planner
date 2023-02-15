@@ -30,7 +30,6 @@ def resize_image_numpy(img, target_resolution = (128, 128)):
 
 prefix = os.getcwd()
 goal_mapping_json = os.path.join(prefix, "data/goal_mapping.json")
-goal_set_json = os.path.join(prefix, "data/groundtruth.json")
 task_info_json = os.path.join(prefix, "data/task_info.json")
 goal_lib_json = os.path.join(prefix, "data/goal_lib.json")
 logging_folder = ""
@@ -54,8 +53,6 @@ class Evaluator:
         log_file = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         self.task = cfg['eval']['task_name']
         self.task_obj, self.max_ep_len, self.task_question = self.load_task_info(self.task)
-        self.goal_set_dct = self.load_goal_set_config()
-        self.goal_set = self.goal_set_dct[self.task]["goal_set"]
         
         self.use_ranking_goal = cfg["goal_model"]["use_ranking_goal"]
         
@@ -94,12 +91,6 @@ class Evaluator:
         episode_length = task_info[task]["episode"]
         task_question = task_info[task]['question']
         return target_item, episode_length, task_question
-
-
-    def load_goal_set_config(self):
-        with open(goal_set_json, "r") as f:
-            goal_set_dct = json.load(f)
-        return goal_set_dct
 
     def load_goal_mapping_config(self):
         with open(goal_mapping_json, "r") as f:
@@ -143,7 +134,6 @@ class Evaluator:
         self.planner.generate_failure_description(self.curr_goal['ranking'])
         self.planner.generate_explanation()
         plan = self.planner.replan(task_question)
-        # self.goal_set = self.planner.plan2goal(plan)
         
         self.goal_list = self.planner.generate_goal_list(plan)
         self.curr_goal = self.goal_list[0]
@@ -244,7 +234,6 @@ class Evaluator:
                 action_done = True
                 # key = self.candidate_goal_list[0]
                 key = self.curr_goal['name']
-                # goal = self.goal_mapping_dct[list(self.goal_set[key]["object"].keys())[0]]
                 goal = self.goal_mapping_dct[list(self.curr_goal["object"].keys())[0]]
                 goal_embedding = self.embedding_dict[goal]
                 goals = torch.from_numpy(goal_embedding).to(self.device).repeat(len(rg), 1)
@@ -257,7 +246,6 @@ class Evaluator:
             else:
                 print("Undefined action type !!")
             
-            # if self.goal_set[curr_goal]['precondition'] is not None:
             if self.curr_goal['precondition'] is not None:
                 for cond in self.curr_goal['precondition'].keys():
                     if cond not in ['wooden_pickaxe', 'stone_pickaxe', 'iron_pickaxe', "diamond_pickaxe", 

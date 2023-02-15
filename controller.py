@@ -307,7 +307,7 @@ class MineAgentWrapper:
                     return self.max_ranking, act
             elif goal in ['iron_ore', 'diamond']:
                 if goal == 'iron_ore':
-                    depth = 50
+                    depth = 30
                 elif goal == 'diamond':
                     depth = 10
                 if states['gps'][-1][1] * 100 > depth:
