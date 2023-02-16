@@ -17,6 +17,21 @@ Human: I succeed on step 5.
 Human: Good. I finish the task.
 AI: OK.
 
+Human: How to obtain bowl?
+AI: The code for obtaining bowl is as bellows:
+def obtain_bowl(inventory = {}):
+    mine({'log':2}, null); # action 1: mine 2 log without tool 
+    craft({'planks':8}, {'log':2}, null); # action 2: craft 8 planks from 2 log
+    craft({'crafting_table':1}, {'planks':4}, null); # action 3: craft 1 crafting_table from 4 planks 
+    craft({'bowl':1}, {'planks':3}, 'crafting_table'); # action 4: craft 1 bowl from 3 planks, on crafting_table
+    return 'bowl'
+Human: I succeed on step 1.
+Human: I succeed on step 2.
+Human: I succeed on step 3.
+Human: I succeed on step 4.
+Human: Good. I finish the task.
+AI: OK.
+
 Human: How to obtain stone_sword?
 AI: The code for obtaining stone_sword is as bellows:
 def obtain_stone_sword(inventory = {}):
