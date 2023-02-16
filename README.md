@@ -40,7 +40,7 @@ python main.py model.load_ckpt_path=<path/to/ckpt>
 ```
 After loading, you should see a window where agents are playing Minecraft. 
 
-<img src="imgs/painting.gif" width="200" />
+<img src="imgs/painting.gif" width="200" /><img src="imgs/obtain_wooden_slab.gif" width="200" />
 
 Note: Our planner depends on stable OpenAI API connection. If meeting connection error, please retry it.
 
