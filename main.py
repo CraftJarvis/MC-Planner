@@ -342,28 +342,8 @@ class Evaluator:
                 print(f'Succeed on {min_episode} step.')
             else:
                 print("Failed.")
-            # print(self.planner.dialogue)
     
-    def multi_task_evaluate(self):
-        loops = self.cfg['eval']['goal_ratio']
-        for task in self.task_list:
-            self.update_task(task)
-            self.logging(f"current task is {task}")
-            if self.num_workers == 0:
-                succ_rate = 0
-                episode_lengths = []
-                for i in range(loops):
-                    self.reset_goal_set()
-                    succ_flag, min_episode = self.multigoal_eval_step(i, self.cfg['eval']['fps'])
-                    succ_rate += succ_flag
-                    if succ_flag: 
-                        episode_lengths.append(min_episode)
-
-                    print(f"Task {task} | Iteration {i} | Successful {succ_flag} | Episode length {min_episode} | Success rate {succ_rate/(i+1)}")
-                    self.logging(f"Task {task} | Iteration {i} | Successful {succ_flag} | Episode length {min_episode}")
-                print("success rate: ", succ_rate/loops)
-                print("average episode length:", sum(episode_lengths)/(len(episode_lengths)+0.01))
-                self.logging(f"Task {task} | Iterations {loops} | Success Rate {succ_rate/loops} | Average Length {sum(episode_lengths)/(len(episode_lengths)+0.01)}")
+    # TODO: add multi-task evaluation
 
 
 @hydra.main(config_path="configs", config_name="defaults")
