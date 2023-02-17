@@ -130,8 +130,8 @@ class Evaluator:
             self.goal_eps = 3000
 
     def replan_task(self, inventory, task_question):
-        self.planner.generate_inventory_description(inventory)
         self.planner.generate_failure_description(self.curr_goal['ranking'])
+        self.planner.generate_inventory_description(inventory)
         self.planner.generate_explanation()
         plan = self.planner.replan(task_question)
         

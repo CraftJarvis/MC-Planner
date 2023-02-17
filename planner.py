@@ -19,6 +19,7 @@ class Planner:
         self.parser_prompt = self.load_prompt(parse_prompt_file)
         # print(self.parser_prompt)
         self.dialogue = ''
+        self.logs = ''
         self.goal_lib = self.load_goal_lib()
         self.openai_api_keys = self.load_openai_keys()
         self.supported_objects = self.get_supported_objects(self.goal_lib)
@@ -49,7 +50,8 @@ class Planner:
     
     def query_codex(self, prompt_text):
         server_flag = 0
-        while True:
+        server_cnt = 0
+        while server_cnt < 10:
             try:
                 self.update_key()
                 response =  openai.Completion.create(
@@ -67,13 +69,15 @@ class Planner:
                 if server_flag:
                     break
             except Exception as e:
+                server_cnt += 1
                 print(e)
         return response
         
 
     def query_gpt3(self, prompt_text):
         server_flag = 0
-        while True:
+        server_cnt = 0
+        while server_cnt < 10:
             try:
                 self.update_key()
                 response =  openai.Completion.create(
@@ -92,6 +96,7 @@ class Planner:
                 if server_flag:
                     break
             except Exception as e:
+                server_cnt += 1
                 print(e)
         return response
 
@@ -186,53 +191,69 @@ class Planner:
         print(f"[INFO]: Current Plan is {goal_list}")
         return goal_list
 
-    def initial_planning(self, task_question):
+    def initial_planning(self, group, task_question):
+        task_prompt = self.load_initial_planning_prompt(group)
         question = f"Human: {task_question}\n"
-        task_prompt_text = self.task_prompt + question
+        task_prompt_text = task_prompt + question
         response = self.query_codex(task_prompt_text)
         plan = response["choices"][0]["text"]
-        self.dialogue = task_prompt_text
+        self.dialogue = self.load_replan_prompt(group) + question
         self.dialogue += plan
+        self.logs = question
+        self.logs += plan
         print(plan)
         return plan
 
     def generate_inventory_description(self, inventory):
         inventory_text = 'Human: My inventory now has '
         for inv_item in inventory:
+            if inv_item['name'] == 'diamond_axe':
+                continue
             if not inv_item['name'] == 'air':
-                inventory_text += f'{inv_item["quantity"]} {inv_item["name"]},'
+                inventory_text += f'{inv_item["quantity"]} {inv_item["name"]}, '
         print(inventory_text)
         inventory_text += '\n'
         self.dialogue += inventory_text
+        self.logs += inventory_text
         return inventory_text
         
 
     def generate_success_description(self, step):
         result_description = f'Human: I succeed on step {step}.\n'
         self.dialogue += result_description
+        self.logs += result_description
         return result_description
 
     def generate_failure_description(self, step):
         result_description = f'Human: I fail on step {step}'
         self.dialogue += result_description
+        self.logs += result_description
         print(result_description)
-        return result_description
+        response = self.query_codex(self.dialogue)
+        detail_result_description = response["choices"][0]["text"]
+        self.dialogue += detail_result_description
+        self.logs += detail_result_description
+        print(detail_result_description)
+        return detail_result_description
 
 
     def generate_explanation(self):
         response = self.query_codex(self.dialogue)
         explanation = response["choices"][0]["text"]
         self.dialogue += explanation
+        self.logs += explanation
         print(explanation)
         return explanation
 
     def replan(self, task_question):
         replan_description = f"Human: Please fix above errors and replan the task '{task_question}'.\n"
         self.dialogue += replan_description
+        self.logs += replan_description
         response = self.query_codex(self.dialogue)
         plan = response["choices"][0]["text"]
         print(plan)
         self.dialogue += plan
+        self.logs += plan
         return plan
 
     
