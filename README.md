@@ -28,7 +28,7 @@ python -m pip install git+https://github.com/CraftJarvis/MC-Simulator.git
 Below are the configures and weights of models. 
 |Configure|Download| Biome| Number of goals|
 |---|---|---|---|
-|Transformer| [here](https://pkueducn-my.sharepoint.com/:u:/g/personal/zhwang_stu_pku_edu_cn/ESvfCgEyBfBBpj2czS88__QBBbQFlIAmI0YdsgFkVEhKUw?e=2k26wY) | Plains | 4 |
+|Transformer| [weights](https://pkueducn-my.sharepoint.com/:u:/g/personal/zhwang_stu_pku_edu_cn/ESvfCgEyBfBBpj2czS88__QBBbQFlIAmI0YdsgFkVEhKUw?e=2k26wY) | Plains | 4 |
 
 ## Prepare OpenAI keys
 Our planner depends on Large Language Model like InstructGPT, Codex or ChatGPT. So we need support the OpenAI keys in the file `data/openai_keys.txt`. An OpenAI key list is also accepted.
