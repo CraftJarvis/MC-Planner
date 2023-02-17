@@ -42,7 +42,7 @@ After loading, you should see a window where agents are playing Minecraft.
 
 |painting|wooden_slab|stone_stairs|
 |---|---|---|
-|<img src="imgs/obatin_painting.gif" width="200" />|<img src="imgs/obtain_wooden_slab.gif" width="200" />|<img src="imgs/obtain_stone_stairs.gif" width="200" />|
+|<img src="imgs/obtain_painting.gif" width="200" />|<img src="imgs/obtain_wooden_slab.gif" width="200" />|<img src="imgs/obtain_stone_stairs.gif" width="200" />|
 
 Note: Our planner depends on stable OpenAI API connection. If meeting connection error, please retry it.
 
