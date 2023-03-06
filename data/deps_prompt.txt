@@ -1,6 +1,3 @@
-Human: You are a helper AI agent in Minecraft. You need to generate the sequences of sub-goals (actions) for a certPlannern task in Minecraft.
-AI: OK.
-
 Human: How to obtain iron_pickaxe?
 AI: The code for obtaining iron_pickaxe is as bellows:
 def obtain_iron_pickaxe(inventory = {}):
@@ -101,8 +98,8 @@ Human: Please fix above errors and replan the task 'How to obtain iron_pickaxe?'
 AI: The code for obtaining iron_pickaxe is as bellows:
 def obtain_iron_pickaxe(inventory = {'planks':6, 'crafting_table':1, 'wooden_pickaxe':1, 'dirt':5, 'stone_pickaxe':1, 'cobblestone':12, 'stone':5, 'iron_ingot':1, 'furnace':1}):
     craft({'stick':4}, {'planks':2}, null); # action 11: craft 4 stick from 2 planks
-    mine({'iron_ore':2}, 'stone_pickaxe'); # action 12: mine 1 iron_ore with stone_pickaxe
-    smelt({'iron_ingot':2}, {'iron_ore':2}, furnace); # action 13: smelt 2 iron_ingot from 2 iron_ore, with furnace 
+    mine({'iron_ore':3}, 'stone_pickaxe'); # action 12: mine 1 iron_ore with stone_pickaxe
+    smelt({'iron_ingot':3}, {'iron_ore':3}, furnace); # action 13: smelt 2 iron_ingot from 2 iron_ore, with furnace 
     craft({'iron_pickaxe':1}, {'iron_ingot':3, 'stick':2}, 'crafting_table'); # action 14: craft 1 iron_pickaxe from 3 iron_ingot and 2 stick, on crafting_table
     return 'iron_pickaxe'
 Human: I succeed on step 11.
@@ -123,5 +120,4 @@ Human: I succeed on step 14.
 Human: I  on step 15.
 Human: Good. I finish the task.
 AI: OK.
-
 

@@ -25,7 +25,7 @@ eval:
   goal_ratio: 5
   freq: 1
   fps: 1000
-  env_name: 'crafting'
+  env_name: 'crafting_plains'
   task_name: 'obtain_planks'
 
 

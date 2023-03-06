@@ -10,30 +10,36 @@ goal_set_json = os.path.join(prefix, "data/groundtruth.json")
 task_info_json = os.path.join(prefix, "data/task_info.json")
 goal_lib_json = os.path.join(prefix, "data/goal_lib.json")
 task_prompt_file = os.path.join(prefix, "data/task_prompt.txt")
+replan_prompt_file = os.path.join(prefix, "data/deps_prompt.txt")
+group_prompt_file = os.path.join(prefix, "data/group_prompts/")
 parse_prompt_file = os.path.join(prefix, "data/parse_prompt.txt")
 openai_keys_file = os.path.join(prefix, "data/openai_keys.txt")
 
 class Planner:
     def __init__(self):
-        self.task_prompt = self.load_prompt(task_prompt_file)
-        self.parser_prompt = self.load_prompt(parse_prompt_file)
+        # self.task_prompt = self.load_prompt(group, task_prompt_file)
+        # self.parser_prompt = self.load_prompt(parse_prompt_file)
         # print(self.parser_prompt)
         self.dialogue = ''
-        self.logs = ''
+        self.logging_dialogue = ''
         self.goal_lib = self.load_goal_lib()
         self.openai_api_keys = self.load_openai_keys()
         self.supported_objects = self.get_supported_objects(self.goal_lib)
+
+    def reset(self):
+        self.dialogue = ''
+        self.logging_dialogue = ''
+
+    def load_openai_keys(self,):
+        with open(openai_keys_file, "r") as f:
+            context = f.read()
+        # print(context.split('\n'))
+        return context.split('\n')
 
     def load_goal_lib(self, ):
         with open(goal_lib_json,'r') as f:
             goal_lib = json.load(f)
         return goal_lib
-    
-    def load_openai_keys(self,):
-        with open(openai_keys_file, "r") as f:
-            context = f.read()
-        print(context.split('\n'))
-        return context.split('\n')
     
     def get_supported_objects(self, goal_lib):
         supported_objs = {}
@@ -42,16 +48,35 @@ class Planner:
             supported_objs[obj] = goal_lib[key]
             supported_objs[obj]['name'] = key
         return supported_objs
-
-    def load_prompt(self, file):
-        with open(file, 'r') as f:
+    
+    def load_parser_prompt(self,):
+        with open(parse_prompt_file, 'r') as f:
             context = f.read()
+        return context
+
+    def load_initial_planning_prompt(self, group):
+        with open(task_prompt_file, 'r') as f:
+            context = f.read()
+        # with open(group_prompt_file+group+'.txt', 'r') as f:
+        #     context += f.read()
+        with open(replan_prompt_file, 'r') as f:
+            context += f.read()
+        return context
+    
+    def load_replan_prompt(self, group):
+        with open(task_prompt_file, 'r') as f:
+            context = f.read()
+        # with open(group_prompt_file+group+'.txt', 'r') as f:
+        #     context += f.read()
+        with open(replan_prompt_file, 'r') as f:
+            context += f.read()
         return context
     
     def query_codex(self, prompt_text):
         server_flag = 0
-        server_cnt = 0
-        while server_cnt < 10:
+        server_error_cnt = 0
+        response = ''
+        while server_error_cnt<10:
             try:
                 self.update_key()
                 response =  openai.Completion.create(
@@ -69,7 +94,7 @@ class Planner:
                 if server_flag:
                     break
             except Exception as e:
-                server_cnt += 1
+                server_error_cnt += 1
                 print(e)
         return response
         
@@ -77,6 +102,9 @@ class Planner:
     def query_gpt3(self, prompt_text):
         server_flag = 0
         server_cnt = 0
+        response = ''
+        print('prompt_text length:', len(prompt_text))
+        prompt_text = prompt_text[-4000:]
         while server_cnt < 10:
             try:
                 self.update_key()
@@ -101,17 +129,17 @@ class Planner:
         return response
 
     def update_key(self, ):
-        # openai_api_keys = self.openai_keys
         curr_key = self.openai_api_keys[0]
         openai.api_key = curr_key
         self.openai_api_keys.remove(curr_key)
         self.openai_api_keys.append(curr_key)
 
     def online_parser(self, text):
+        self.parser_prompt = self.load_parser_prompt()
         parser_prompt_text = self.parser_prompt + text
         response = self.query_gpt3(parser_prompt_text)
         parsed_info = response["choices"][0]["text"]
-        print(parsed_info)
+        # print(parsed_info)
         lines = parsed_info.split('\n')
 
         name = None
@@ -158,7 +186,7 @@ class Planner:
         for line in lines:
             if '#' in line:
                 name, obj, rank = self.online_parser(f"input: {line}")
-                print("[INFO]: ", name, obj, rank)
+                print("[INFO]:", name, obj, rank)
 
                 if name in self.goal_lib.keys():
                     goal_type = self.goal_lib[name]["type"]
@@ -199,8 +227,8 @@ class Planner:
         plan = response["choices"][0]["text"]
         self.dialogue = self.load_replan_prompt(group) + question
         self.dialogue += plan
-        self.logs = question
-        self.logs += plan
+        self.logging_dialogue = question
+        self.logging_dialogue += plan
         print(plan)
         return plan
 
@@ -214,25 +242,25 @@ class Planner:
         print(inventory_text)
         inventory_text += '\n'
         self.dialogue += inventory_text
-        self.logs += inventory_text
+        self.logging_dialogue += inventory_text
         return inventory_text
         
 
     def generate_success_description(self, step):
         result_description = f'Human: I succeed on step {step}.\n'
         self.dialogue += result_description
-        self.logs += result_description
+        self.logging_dialogue += result_description
         return result_description
 
     def generate_failure_description(self, step):
         result_description = f'Human: I fail on step {step}'
         self.dialogue += result_description
-        self.logs += result_description
+        self.logging_dialogue += result_description
         print(result_description)
         response = self.query_codex(self.dialogue)
         detail_result_description = response["choices"][0]["text"]
         self.dialogue += detail_result_description
-        self.logs += detail_result_description
+        self.logging_dialogue += detail_result_description
         print(detail_result_description)
         return detail_result_description
 
@@ -241,19 +269,19 @@ class Planner:
         response = self.query_codex(self.dialogue)
         explanation = response["choices"][0]["text"]
         self.dialogue += explanation
-        self.logs += explanation
+        self.logging_dialogue += explanation
         print(explanation)
         return explanation
 
     def replan(self, task_question):
         replan_description = f"Human: Please fix above errors and replan the task '{task_question}'.\n"
         self.dialogue += replan_description
-        self.logs += replan_description
+        self.logging_dialogue += replan_description
         response = self.query_codex(self.dialogue)
         plan = response["choices"][0]["text"]
         print(plan)
         self.dialogue += plan
-        self.logs += plan
+        self.logging_dialogue += plan
         return plan
 
     

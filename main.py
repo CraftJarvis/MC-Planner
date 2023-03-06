@@ -36,10 +36,20 @@ logging_folder = ""
 
 
 # env_name = "crafting"
-# task = "obtain_wooden_slab"      
+# task = "obtain_wooden_slab"     
+task_list = [] 
+with open(task_info_json, 'r') as f:
+    task_info = json.load(f)
+task_list = list(task_info.keys())
+
+env = MineDojoEnv(
+        name='crafting_forest', 
+        img_size=(640, 480),
+        rgb_only=False,
+    )
 
 class Evaluator:
-    def __init__(self, cfg):
+    def __init__(self, cfg, env):
         device = torch.device("cuda", 0)
         self.device = device
         self.cfg = cfg
@@ -50,9 +60,9 @@ class Evaluator:
                 img_size=(cfg['simulator']['resolution'][0], cfg['simulator']['resolution'][1]),
                 rgb_only=False,
             )
-        log_file = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        self.task = cfg['eval']['task_name']
-        self.task_obj, self.max_ep_len, self.task_question = self.load_task_info(self.task)
+        # self.env = env
+        
+        self.task_list = task_list
         
         self.use_ranking_goal = cfg["goal_model"]["use_ranking_goal"]
         
@@ -73,24 +83,43 @@ class Evaluator:
         self.mine_agent = MineAgent(cfg, device).model
         self.mine_wrapper = MineAgentWrapper(self.env, self.mine_agent, max_ranking=15)
         self.craft_agent = CraftAgent(self.env)
-
         self.planner = Planner()
-
         self.selector = Selector()
 
-        plan = self.planner.initial_planning(self.task_question)
+        task = cfg['eval']['task_name']
+        self.reset(task)
+
+       
+
+    def reset(self, task):
+        print(f"[INFO]: resetting the task {task}")
+        self.planner.reset()
+        self.task = task
+        self.task_obj, self.max_ep_len, self.task_question, self.task_group = self.load_task_info(self.task)
+        plan = self.planner.initial_planning(self.task_group, self.task_question)
         self.goal_list = self.planner.generate_goal_list(plan)
-        print(self.goal_list)
-        self.curr_goal = self.goal_list[0]
+        if len(self.goal_list) == 0:
+            self.curr_goal = {
+                'name': 'mine_log', 
+                'type': 'mine', 
+                'object': {'log': 1}, 
+                'precondition': {}, 
+                'ranking': 1
+            }
+        else:
+            self.curr_goal = self.goal_list[0]
         self.goal_eps = 0
+        self.replan_rounds = 0
+        self.logs = {}
 
     def load_task_info(self, task):
         with open(task_info_json, 'r') as f:
             task_info = json.load(f)
         target_item = task_info[task]['object']
-        episode_length = task_info[task]["episode"]
+        episode_length = int(task_info[task]["episode"])
         task_question = task_info[task]['question']
-        return target_item, episode_length, task_question
+        task_group = task_info[task]['group']
+        return target_item, episode_length, task_question, task_group
 
     def load_goal_mapping_config(self):
         with open(goal_mapping_json, "r") as f:
@@ -119,15 +148,13 @@ class Evaluator:
         return False
 
     def update_goal(self, inventory):
-        while self.check_inventory(inventory, self.curr_goal["object"]):
+        # while self.check_inventory(inventory, self.curr_goal["object"]):
+        if self.check_inventory(inventory, self.curr_goal["object"]) and self.goal_eps>1:
             print(f"[INFO]: finish goal {self.curr_goal['name']}.")
             self.planner.generate_success_description(self.curr_goal["ranking"])
             self.goal_list.remove(self.goal_list[0])
             self.curr_goal = self.goal_list[0]
             self.goal_eps = 0
-        
-        if self.curr_goal["type"]== 'mine' and not self.check_precondition(inventory, self.curr_goal["precondition"]):
-            self.goal_eps = 3000
 
     def replan_task(self, inventory, task_question):
         self.planner.generate_failure_description(self.curr_goal['ranking'])
@@ -136,12 +163,28 @@ class Evaluator:
         plan = self.planner.replan(task_question)
         
         self.goal_list = self.planner.generate_goal_list(plan)
-        self.curr_goal = self.goal_list[0]
+        if len(self.goal_list) == 0:
+            self.curr_goal = {
+                'name': 'mine_log', 
+                'type': 'mine', 
+                'object': {'log': 1}, 
+                'precondition': {}, 
+                'ranking': 1
+            }
+        else:
+            self.curr_goal = self.goal_list[0]
         self.goal_eps = 0 
+        self.replan_rounds += 1
+
+    def logging(self, t):
+        self.logs[t] = {}
+        self.logs[t]['curr_plan'] = self.goal_list
+        self.logs[t]['curr_goal'] = self.curr_goal
+        self.logs[t]['curr_dialogue'] = self.planner.logging_dialogue
 
 
     @torch.no_grad()
-    def eval_step(self, fps=100):
+    def eval_step(self, fps=200):
         
         self.mine_agent.eval()
 
@@ -189,7 +232,6 @@ class Evaluator:
 
         states = obs
         actions = torch.zeros(1, self.mine_agent.action_dim, device=self.device)
-        timesteps = torch.tensor([0], device=self.device, dtype=torch.long)
 
         acquire = []
         curr_goal = None
@@ -199,54 +241,69 @@ class Evaluator:
         
         obs, reward, env_done, info = self.env.step(self.env.action_space.no_op())
         init_deaths = info['stat']['deaths']
+
+        now = datetime.now()
+        timestamp = f"{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}_{now.second}_"
+        log_folder_name = os.path.join(prefix, "logs/")
+        if not os.path.exists(log_folder_name):
+            os.mkdir(log_folder_name)
+        log_file_name = log_folder_name + timestamp + self.task + '.json'
+        with open(log_file_name, 'w') as f:
+            json.dump(self.logs, f, indent=4)
         
         # max_ep_len = task_eps[self.task]
         for t in range(0, self.max_ep_len):
+            # if t%100 == 0:
+            #     print(f"[INFO]: CURRENT STEP IS {t}.")
             time.sleep(1/fps)
-            
-            sf = 5 # self.cfg['data']['skip_frame']
-            wl = 16 # self.cfg['data']['window_len']
-            
-            # extract frame by every <skip_frame> frames
-            end = actions.shape[0] - 1
-            rg = torch.arange(end, min(max(end-sf*(wl-1)-1, seek_point-1), end-1), -sf).flip(0)
 
             self.update_goal(info['inventory'])
-            # print(self.curr_goal)
-
-            # take the current goal type
-            curr_goal_type = self.curr_goal["type"]
+            curr_goal = self.curr_goal
 
             if not prev_goal == curr_goal:
                 print(f"[INFO]: Episode Step {t}, Current Goal {curr_goal}")
+                seek_point = t
+                actions = torch.zeros(actions.shape[0], self.mine_agent.action_dim, device=self.device)
+                # obs, reward, env_done, info = self.env.step(self.env.action_space.no_op())
+                # obs = preprocess_obs(obs)
+                # states = obs
+                # actions = torch.zeros(1, self.mine_agent.action_dim, device=self.device)
+                self.logging(t)
+                with open(log_file_name, 'w') as f:
+                    json.dump(self.logs, f, indent=4)
             prev_goal = curr_goal
-            # choose for actions 
+
+             # take the current goal type
+            curr_goal_type = self.curr_goal["type"]
+            
+            sf = self.cfg['data']['skip_frame']
+            wl = self.cfg['data']['window_len']
+            
+            end = actions.shape[0] - 1
+            rg = torch.arange(end, min(max(end-sf*(wl-1)-1, seek_point-1), end-1), -sf).flip(0)
 
             # DONE: change the craft agent into craft actions
             if curr_goal_type in ['craft', 'smelt']:
                 action_done = False
-                curr_goal = self.curr_goal['name']
                 preconditions = self.curr_goal["precondition"].keys()
                 goal = list(self.curr_goal['object'].keys())[0]
                 curr_actions, action_done = self.craft_agent.get_action(preconditions, curr_goal_type, goal)
 
             elif curr_goal_type == "mine":
                 action_done = True
-                # key = self.candidate_goal_list[0]
-                key = self.curr_goal['name']
                 goal = self.goal_mapping_dct[list(self.curr_goal["object"].keys())[0]]
                 goal_embedding = self.embedding_dict[goal]
                 goals = torch.from_numpy(goal_embedding).to(self.device).repeat(len(rg), 1)
                 complete_states = slice_obs(states, rg)
                 complete_states['prev_action'] = actions[rg]
-                _ranking, _action = self.mine_wrapper.get_action(goal, goals, complete_states)
                 
-                curr_goal = key
+
+                _ranking, _action = self.mine_wrapper.get_action(goal, goals, complete_states)
                 curr_actions = _action
             else:
                 print("Undefined action type !!")
             
-            if self.curr_goal['precondition'] is not None:
+            if len(self.curr_goal['precondition'].keys()):
                 for cond in self.curr_goal['precondition'].keys():
                     if cond not in ['wooden_pickaxe', 'stone_pickaxe', 'iron_pickaxe', "diamond_pickaxe", 
                                 "wooden_axe", "stone_axe", "iron_axe", "diamond_axe"]:
@@ -261,17 +318,13 @@ class Evaluator:
                                 break
             #! indent change
             action = curr_actions
-            if hasattr(action, 'is_cuda') and action.is_cuda:
+            if torch.is_tensor(action):
                 action = action.cpu().numpy()
             obs, reward, env_done, info = self.env.step(action)
-            
-            # history_gps.append(obs['gps'])
-            # if curr_goal != prev_goal:
-            #     print(f"Iteration {iter_num} | Step {t} - current goal is {curr_goal}")
 
             if self.record_frames:
                 video_frames.append(obs['rgb'])
-                goal_frames.append(curr_goal)
+                goal_frames.append(curr_goal['name'])
             obs = preprocess_obs(obs)
 
             if type(action) != torch.Tensor:
@@ -281,28 +334,42 @@ class Evaluator:
 
             states = stack_obs(states, obs)
             actions = torch.cat([actions, action.unsqueeze(0)], dim = 0)
-            timesteps = torch.cat([timesteps, torch.tensor([t], device=self.device, dtype=torch.long)], dim=0)
 
             self.goal_eps += 1
-            if curr_goal_type == 'mine' and self.goal_eps > 2000:
+            if curr_goal_type == 'mine' and not self.check_precondition(info['inventory'], self.curr_goal["precondition"]):
                 self.replan_task(info["inventory"], self.task_question)
-            elif curr_goal_type == 'craft' and self.goal_eps > 100:
+                self.logging(t)
+                with open(log_file_name, 'w') as f:
+                    json.dump(self.logs, f, indent=4)
+            elif curr_goal_type == 'craft' and self.goal_eps > 150:
                 self.replan_task(info["inventory"], self.task_question)
-            elif curr_goal_type == 'smelt' and self.goal_eps > 100:
+                self.logging(t)
+                with open(log_file_name, 'w') as f:
+                    json.dump(self.logs, f, indent=4)
+            elif curr_goal_type == 'smelt' and self.goal_eps > 200:
                 self.replan_task(info["inventory"], self.task_question)
+                self.logging(t)
+                with open(log_file_name, 'w') as f:
+                    json.dump(self.logs, f, indent=4)
 
-            
-            if len(history_gps) > 1000 and (history_gps[-1] == history_gps[-1000]).all():
+            if self.replan_rounds > 12:
+                print("[INFO]: replanning over rounds")
                 break
             
             if self.check_done(info['inventory'], self.task_obj):  # check if the task is done?
                 env_done = True
                 print(f"[INFO]: finish goal {self.curr_goal['name']}.")
                 self.planner.generate_success_description(self.curr_goal["ranking"])
+                self.logs[t] = {}
+                self.logs[t]['curr_plan'] = self.goal_list
+                self.logs[t]['curr_goal'] = self.curr_goal
+                self.logs[t]['curr_dialogue'] = self.planner.logging_dialogue
+                self.logs[t]['result'] = True
                 break
 
         # record the video
-        if self.record_frames:
+        if env_done and self.record_frames:
+        # if self.record_frames:
             print("[INFO]: saving the frames")
             imgs = []
             for id, frame in enumerate(video_frames):
@@ -322,34 +389,48 @@ class Evaluator:
                     (10, 55),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.8,
-                    (0, 0, 255), 
+                    (255, 0, 0), 
                     2,
                 )
                 imgs.append(Image.fromarray(frame))
             imgs = imgs[::3]
             print(f"record imgs length: {len(imgs)}")
             now = datetime.now()
-            timestamp = f"{now.hour}_{now.minute}_{now.second}"
-            file_name = os.path.join(prefix, "recordings/"+timestamp)
-            imgs[0].save(file_name + ".gif", save_all=True, append_images=imgs[1:], optimize=False, quality=0, duration=150, loop=0)
+            timestamp = f"{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}_{now.second}"
+            folder_name = os.path.join(prefix, "recordings/"+timestamp+"/")
+            if not os.path.exists(folder_name):
+                os.mkdir(folder_name)
+            imgs[0].save(folder_name+self.task + ".gif", save_all=True, append_images=imgs[1:], optimize=False, quality=0, duration=150, loop=0)
+            with open(folder_name+self.task + ".json", 'w') as f:
+                json.dump(self.logs, f, indent=4)
         
         return env_done, t # True or False, episode length
 
     def single_task_evaluate(self):
+        loops = self.cfg['eval']['goal_ratio']
         if self.num_workers == 0:
-            succ_flag, min_episode = self.eval_step()
-            if succ_flag: 
-                print(f'Succeed on {min_episode} step.')
-            else:
-                print("Failed.")
-    
-    # TODO: add multi-task evaluation
+            succ_rate = 0
+            episode_lengths = []
+            for i in range(loops):
+                try:
+                    self.reset(self.task)
+                    succ_flag, min_episode = self.eval_step()
+                except Exception as e:
+                    print(e)
+                    succ_flag = False
+                    min_episode = 0
+                succ_rate += succ_flag
+                if succ_flag: 
+                    episode_lengths.append(min_episode)
+                print(f"Task {self.task} | Iteration {i} | Successful {succ_flag} | Episode length {min_episode} | Success rate {succ_rate/(i+1)}")
+            print("success rate: ", succ_rate/loops)
+            print("average episode length:", sum(episode_lengths)/(len(episode_lengths)+0.01))
 
 
 @hydra.main(config_path="configs", config_name="defaults")
 def main(cfg):
     print(cfg)
-    evaluator = Evaluator(cfg) 
+    evaluator = Evaluator(cfg, env) 
     evaluator.single_task_evaluate()
 
 
