@@ -17,9 +17,6 @@ openai_keys_file = os.path.join(prefix, "data/openai_keys.txt")
 
 class Planner:
     def __init__(self):
-        # self.task_prompt = self.load_prompt(group, task_prompt_file)
-        # self.parser_prompt = self.load_prompt(parse_prompt_file)
-        # print(self.parser_prompt)
         self.dialogue = ''
         self.logging_dialogue = ''
         self.goal_lib = self.load_goal_lib()
@@ -118,8 +115,6 @@ class Planner:
                     presence_penalty=0
                 )
                 result_text = response['choices'][0]['text']
-                # print("parse prompt:", prompt_text)
-                # print("parse_result:", result_text)
                 server_flag = 1
                 if server_flag:
                     break
@@ -148,22 +143,15 @@ class Planner:
         
         for line in lines:
             line = line.replace(' ', '')
-            # print('line', line)
             if 'action:' in line:
                 action = line[7:]
-                # print(f"action: {action}")
             elif 'name:' in line:
                 name = line[5:]
-                # print(f"name: {name}")
             elif 'object:' in line:
                 obj = eval(line[7:])
-                # print("[INFO]:", type(obj))
-                # print(f"object: {obj}")
             elif 'rank:' in line:
                 rank = int(line[5:])
-                # print(f"rank: {rank}")
             else:
-                # print("Error parsing the goal.")
                 pass
         return name, obj, rank
 

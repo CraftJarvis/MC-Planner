@@ -253,8 +253,6 @@ class Evaluator:
         
         # max_ep_len = task_eps[self.task]
         for t in range(0, self.max_ep_len):
-            # if t%100 == 0:
-            #     print(f"[INFO]: CURRENT STEP IS {t}.")
             time.sleep(1/fps)
 
             self.update_goal(info['inventory'])
@@ -264,10 +262,6 @@ class Evaluator:
                 print(f"[INFO]: Episode Step {t}, Current Goal {curr_goal}")
                 seek_point = t
                 actions = torch.zeros(actions.shape[0], self.mine_agent.action_dim, device=self.device)
-                # obs, reward, env_done, info = self.env.step(self.env.action_space.no_op())
-                # obs = preprocess_obs(obs)
-                # states = obs
-                # actions = torch.zeros(1, self.mine_agent.action_dim, device=self.device)
                 self.logging(t)
                 with open(log_file_name, 'w') as f:
                     json.dump(self.logs, f, indent=4)
