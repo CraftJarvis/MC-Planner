@@ -31,7 +31,7 @@ from minedojo.sim.mc_meta import mc as MC
 from typing import List, Dict, Tuple
 from itertools import chain
 from ray.rllib.models.torch.torch_action_dist import TorchMultiCategorical
-from ray.rllib.env.wrappers.minedojo_wrapper import MineDojoEnv
+from minedojo.minedojo_wrapper import MineDojoEnv
 from src.models.simple import SimpleNetwork
 from src.utils.vision import create_backbone, resize_image
 
