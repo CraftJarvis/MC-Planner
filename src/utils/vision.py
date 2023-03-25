@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from copy import deepcopy
 from rich import print
 from mineclip import MineCLIP
-from ray.rllib.models.torch.vpt_backbone import VPTBackbone
+# from ray.rllib.models.torch.vpt_backbone import VPTBackbone
 from src.utils.resnet import resnet18, resnet34, resnet50, resnet101, resnet152
 from src.utils.impala_lib.impala_cnn import ImpalaCNN
 from src.utils.impala_lib.goal_impala_cnn import GoalImpalaCNN
@@ -47,31 +47,31 @@ class MineCLIPWrapper(MineCLIP):
         return image_feats
 
 
-class VPTWrapper(VPTBackbone):
+# class VPTWrapper(VPTBackbone):
 
-    def __init__(self, model_path, weight_path = "", **kwargs):
-        agent_parameters = pickle.load(open(model_path, "rb"))
-        # ! remember to restore it
-        # agent_parameters["model"]["args"]["net"]["args"]["img_shape"] = [128, 128, 4]
-        print(f"parameters cfg: ", agent_parameters["model"]["args"]["net"]["args"])
-        VPTBackbone.__init__(self, net_config=agent_parameters["model"]["args"]["net"]["args"])
-        if weight_path != "":
-            print("[VISION] using pretrained weights to initialize vpt backbone (impala cnn)! ")
-            weights = torch.load(weight_path)
-            self.load_weights(weights)
-        else:
-            print("[VISION] train vpt backbone (impala cnn) from scratch! ")
+#     def __init__(self, model_path, weight_path = "", **kwargs):
+#         agent_parameters = pickle.load(open(model_path, "rb"))
+#         # ! remember to restore it
+#         # agent_parameters["model"]["args"]["net"]["args"]["img_shape"] = [128, 128, 4]
+#         print(f"parameters cfg: ", agent_parameters["model"]["args"]["net"]["args"])
+#         VPTBackbone.__init__(self, net_config=agent_parameters["model"]["args"]["net"]["args"])
+#         if weight_path != "":
+#             print("[VISION] using pretrained weights to initialize vpt backbone (impala cnn)! ")
+#             weights = torch.load(weight_path)
+#             self.load_weights(weights)
+#         else:
+#             print("[VISION] train vpt backbone (impala cnn) from scratch! ")
             
-        for name, param in self.named_parameters():
-            if "bias" not in name:
-                param.requires_grad = False
+#         for name, param in self.named_parameters():
+#             if "bias" not in name:
+#                 param.requires_grad = False
     
-    def forward(self, img, goal_embeddings):
-        assert len(img.shape) == 4
-        img = resize_image(img, (128, 128))
-        img = img.permute(0, 2, 3, 1)
-        opt = VPTBackbone.forward(self, img)
-        return opt
+#     def forward(self, img, goal_embeddings):
+#         assert len(img.shape) == 4
+#         img = resize_image(img, (128, 128))
+#         img = img.permute(0, 2, 3, 1)
+#         opt = VPTBackbone.forward(self, img)
+#         return opt
 
 
 class ImpalaCNNWrapper(nn.Module):
@@ -239,14 +239,11 @@ class ResNetWrapper(nn.Module):
         
 
 def create_backbone(name, model_path = "", weight_path = "", **kwargs):
-    assert name in ['impala_cnn', 'vpt', 'mineclip', 'impala_1x', 'impala_2x', 'impala_3x', \
+    assert name in ['impala_cnn', 'mineclip', 'impala_1x', 'impala_2x', 'impala_3x', \
                     'goal_impala_1x', 'goal_impala_2x', 'goal_impala_3x', \
                     'resnet18', 'resnet34', 'resnet50', 'resnet101'], \
                     f"[x] backbone {name} is not surpported!"
-    if name == 'vpt':
-        assert model_path != "", "[VISION] vpt backbone (impala cnn) need model path!"
-        return VPTWrapper(model_path, weight_path, **kwargs)
-    elif name == 'mineclip':
+    if name == 'mineclip':
         assert weight_path != "", "[VISION] mineclip model need weight path!"
         return MineCLIPWrapper(weight_path, **kwargs)
     elif name == 'resnet18':
