@@ -11,9 +11,12 @@
 [![GitHub license](https://img.shields.io/github/license/MineDojo/MineCLIP)](https://github.com/MineDojo/MineCLIP/blob/main/license)
 </div>
 
-## Preparation
+## Updates
+
+* [2023.03.28] Due to the cancellation of access to Codex by OpenAI, planning based on Codex is no longer supported by this repository. We will update to the latest OpenAI model, ChatGPT, which has better performance, as soon as possible.
+
+## Prepare Packages
 Our codebase require Python ≥ 3.9. 
-It also requires a [modified version of MineDojo](https://github.com/CraftJarvis/MC-Simulator) as the simulator and a [goal-conditioned controller](https://github.com/CraftJarvis/MC-Controller). 
 Please run the following commands to prepare the environments. 
 ```sh
 conda create -n planner python=3.9 
@@ -21,7 +24,15 @@ conda activate planner
 python -m pip install numpy torch==2.0.0.dev20230208+cu117 --index-url https://download.pytorch.org/whl/nightly/cu117
 python -m pip install -r requirements.txt
 python -m pip install git+https://github.com/MineDojo/MineCLIP
-python -m pip install git+https://github.com/CraftJarvis/MC-Simulator.git
+```
+
+## Prepare Environment
+
+It also requires a [modified version of MineDojo](https://github.com/CraftJarvis/MC-Simulator) as the simulator and a [goal-conditioned controller](https://github.com/CraftJarvis/MC-Controller). 
+```sh
+git clone https://github.com/CraftJarvis/MC-Simulator.git
+cd MC-Simulator
+pip install -e .
 ```
 
 ## Prepare controller checkpoints
