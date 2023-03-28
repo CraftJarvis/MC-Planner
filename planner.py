@@ -77,7 +77,7 @@ class Planner:
             try:
                 self.update_key()
                 response =  openai.Completion.create(
-                    model="code-davinci-002",
+                    model="code-davinci-002", # openai cancel the access of codex in 23.03
                     prompt=prompt_text,
                     temperature=0.7,
                     max_tokens=1024,

@@ -267,7 +267,8 @@ def making_exp_name(cfg):
     
     return "@".join(component)
 
-from ray.rllib.models.torch.mineclip_lib.mineclip_model import MineCLIP
+# from ray.rllib.models.torch.mineclip_lib.mineclip_model import MineCLIP
+from src.mineclip_lib.mineclip_model import MineCLIP
 def accquire_goal_embeddings(clip_path, goal_list, device="cuda"):
     clip_cfg = {'arch': 'vit_base_p16_fz.v2.t2', 'hidden_dim': 512, 'image_feature_dim': 512, 'mlp_adapter_spec': 'v0-2.t0', 
                'pool_type': 'attn.d2.nh8.glusw', 'resolution': [160, 256]}

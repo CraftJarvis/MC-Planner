@@ -43,7 +43,7 @@ with open(task_info_json, 'r') as f:
 task_list = list(task_info.keys())
 
 env = MineDojoEnv(
-        name='crafting_forest', 
+        name='Plains', 
         img_size=(640, 480),
         rgb_only=False,
     )
