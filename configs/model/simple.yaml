@@ -10,6 +10,6 @@ max_ep_len: 1000
 backbone_name: goal_impala_1x
 frozen_cnn: False
 only_load_cnn: False
-load_ckpt_path: '/home/zhwang/workspace/minerl/MC-Planner/checkpoints/transformer.pt'
+load_ckpt_path: '/Users/aronqi/Downloads/GitHub/MC-Planner/checkpoints/transformer.pt'
 
 c: 8

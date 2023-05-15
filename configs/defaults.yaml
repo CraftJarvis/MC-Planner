@@ -59,7 +59,7 @@ model:
   weight_path: ''
 
 pretrains:
-  clip_path: /home/zhwang/workspace/minerl/MC-Planner/checkpoints/attn.pth
+  clip_path: /Users/aronqi/Downloads/GitHub/MC-Planner/checkpoints/attn.pth
 
 loss:
   action_loss: 
