@@ -39,7 +39,7 @@ pip install -e .
 Below are the configures and weights of models. 
 |Configure|Download| Biome| Number of goals|
 |---|---|---|---|
-|Transformer| [weights](https://pkueducn-my.sharepoint.com/:f:/g/personal/zhwang_stu_pku_edu_cn/Ev7WGWHL5PpCjMKil0dYrOUBEwfc-y9gM7EPtsQqqp5d0A?e=UdB5gf) | Plains | 4 |
+|Transformer| [weights](https://pkueducn-my.sharepoint.com/:f:/g/personal/zhwang_pkueducn_onmicrosoft_com/Ev7WGWHL5PpCjMKil0dYrOUB8nw0Yqd8KUyfB47uxgoJow?e=xTgtPY) | Plains | 4 |
 
 ## Prepare OpenAI keys
 Our planner depends on Large Language Model like InstructGPT, Codex or ChatGPT. So we need support the OpenAI keys in the file `data/openai_keys.txt`. An OpenAI key list is also accepted.
