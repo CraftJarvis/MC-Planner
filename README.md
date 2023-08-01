@@ -12,7 +12,7 @@
 </div>
 
 ## Updates
-
+* [2023.08.01] Update Codex to ChatGPT.
 * [2023.03.28] Due to the cancellation of access to Codex by OpenAI, planning based on Codex is no longer supported by this repository. We will update to the latest OpenAI model, ChatGPT, which has better performance, as soon as possible.
 
 ## Prepare Packages
