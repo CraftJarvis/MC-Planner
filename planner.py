@@ -2,6 +2,7 @@ import json
 import openai
 import random
 import os
+import re
 
 prefix = os.getcwd()
 # names_json = os.path.join(prefix, "names.json")
@@ -69,16 +70,58 @@ class Planner:
             context += f.read()
         return context
     
+    def prompt2message(self, text):
+        dialogue_list = []
+        current_role = None
+
+        # Regular expressions to match user and assistant lines
+        user_pattern = r'^Human:(.*)'
+        assistant_pattern = r'^AI:(.*)'
+
+        # Split the text into lines
+        lines = text.split('\n')
+
+        saved = True
+        for line in lines:
+            # Check if the line contains user or assistant information
+            user_match = re.match(user_pattern, line.strip())
+            assistant_match = re.match(assistant_pattern, line.strip())
+
+            if user_match:
+                current_role = "user"
+                current_text = user_match.group(1).strip()
+            elif assistant_match:
+                current_role = "assistant"
+                current_text = assistant_match.group(1).strip()
+            else:
+                current_role = None
+                current_text = current_text + '\n' + line
+                dialogue_list[-1]["content"] = current_text
+                continue
+
+            # Append the current role and text to the dialogue list
+            if current_role and current_text:
+                dialogue_list.append({"role": current_role, "content": current_text})
+        dialogue_list[0]["role"] = "system"
+        return dialogue_list
+
+
     def query_codex(self, prompt_text):
         server_flag = 0
         server_error_cnt = 0
         response = ''
+        messages = self.prompt2message(prompt_text)
+        # print(messages)
+        # quit()
         while server_error_cnt<10:
             try:
                 self.update_key()
-                response =  openai.Completion.create(
-                    model="code-davinci-002", # openai cancel the access of codex in 23.03
-                    prompt=prompt_text,
+                response =  openai.ChatCompletion.create(
+                # response =  openai.Completion.create(
+                    model="gpt-3.5-turbo-16k",
+                    # model="text-davinci-003", # exceed token limit ...
+                    # model="code-davinci-002", # openai cancel the access of codex in 23.03
+                    messages= messages,
                     temperature=0.7,
                     max_tokens=1024,
                     top_p=1,
@@ -86,14 +129,17 @@ class Planner:
                     presence_penalty=0,
                     stop=["Human:",]
                     )
-                # result_text = response['choices'][0]['text']
+                # print("response from chatgg", response)
+                result_text = response['choices'][0]["message"]['content']
+                # print(result_text)
                 server_flag = 1
                 if server_flag:
                     break
             except Exception as e:
                 server_error_cnt += 1
                 print(e)
-        return response
+        # return response
+        return result_text
         
 
     def query_gpt3(self, prompt_text):
@@ -211,8 +257,9 @@ class Planner:
         task_prompt = self.load_initial_planning_prompt(group)
         question = f"Human: {task_question}\n"
         task_prompt_text = task_prompt + question
-        response = self.query_codex(task_prompt_text)
-        plan = response["choices"][0]["text"]
+        # response = self.query_codex(task_prompt_text)
+        # plan = response["choices"][0]["text"]
+        plan = self.query_codex(task_prompt_text)
         self.dialogue = self.load_replan_prompt(group) + question
         self.dialogue += plan
         self.logging_dialogue = question
@@ -245,8 +292,9 @@ class Planner:
         self.dialogue += result_description
         self.logging_dialogue += result_description
         print(result_description)
-        response = self.query_codex(self.dialogue)
-        detail_result_description = response["choices"][0]["text"]
+        # response = self.query_codex(self.dialogue)
+        # detail_result_description = response["choices"][0]["text"]
+        detail_result_description = self.query_codex(self.dialogue)
         self.dialogue += detail_result_description
         self.logging_dialogue += detail_result_description
         print(detail_result_description)
@@ -254,8 +302,9 @@ class Planner:
 
 
     def generate_explanation(self):
-        response = self.query_codex(self.dialogue)
-        explanation = response["choices"][0]["text"]
+        # response = self.query_codex(self.dialogue)
+        # explanation = response["choices"][0]["text"]
+        explanation = self.query_codex(self.dialogue)
         self.dialogue += explanation
         self.logging_dialogue += explanation
         print(explanation)
@@ -265,8 +314,9 @@ class Planner:
         replan_description = f"Human: Please fix above errors and replan the task '{task_question}'.\n"
         self.dialogue += replan_description
         self.logging_dialogue += replan_description
-        response = self.query_codex(self.dialogue)
-        plan = response["choices"][0]["text"]
+        # response = self.query_codex(self.dialogue)
+        # plan = response["choices"][0]["text"]
+        plan = self.query_codex(self.dialogue)
         print(plan)
         self.dialogue += plan
         self.logging_dialogue += plan
