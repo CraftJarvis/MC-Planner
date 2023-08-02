@@ -12,7 +12,9 @@
 </div>
 
 ## Updates
-* [2023.08.01] Update Codex to ChatGPT.
+* [2023.08.01] 
+  * Update Codex to ChatGPT.
+  * Add Java JDK8 installation guideline required by MineDojo.
 * [2023.03.28] Due to the cancellation of access to Codex by OpenAI, planning based on Codex is no longer supported by this repository. We will update to the latest OpenAI model, ChatGPT, which has better performance, as soon as possible.
 
 ## Prepare Packages
@@ -35,7 +37,32 @@ cd MC-Simulator
 pip install -e .
 ```
 
+> The following is from the official docs of MineDojo.
+
+Java JDK 8 is required to support the backend of MineDojo. To install JDK 8 on Ubuntu 20.04, you can run the following command:
+```
+apt update -y && apt install -y software-properties-common && \
+    add-apt-repository ppa:openjdk-r/ppa && apt update -y && \
+    apt install -y openjdk-8-jdk
+```
+After installing Java JDK 8, in case your Ubuntu comes with pre-installed Java, you may need to run the following code to switch default Java version:
+```
+sudo update-alternatives --config java
+```
+Note that if your machine is headless, for example a VM on Google Cloud Platform, you need to use a software renderer such as xvfb such that our codebase can work properly. To install xvfb and other dependencies, run
+```
+sudo apt install xvfb xserver-xephyr vnc4server python-opengl ffmpeg
+```
+
+To run with xvfb, you can either prepend xvfb-run to commands running Python scripts, or set environment variable MINEDOJO_HEADLESS=1. The code block below demonstrates these two options.
+```
+xvfb-run python path/to/minedojo/python/scripts.py
+
+MINEDOJO_HEADLESS=1 python path/to/minedojo/python/scripts.py
+```
+
 ## Prepare controller checkpoints
+
 Below are the configures and weights of models. 
 |Configure|Download| Biome| Number of goals|
 |---|---|---|---|
