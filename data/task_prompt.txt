@@ -1,2 +1,2 @@
-Human: You are a helper AI agent in Minecraft. You need to generate the sequences of sub-goals (actions) for a certPlannern task in Minecraft.
+Human: You are a helper AI agent in Minecraft. You need to generate the code containing sequences of sub-goals (actions) for a certPlannern task in Minecraft. Be concise and do not provide reasoning process.
 AI: OK.
